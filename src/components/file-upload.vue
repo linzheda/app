@@ -86,7 +86,7 @@
                 ],//选择的上拉菜单的选项
                 pics: [],//图片集合
                 files: [],//文件路径
-                noPic:'this.src="' + require('@/assets/global-images/imgbreakdown.png') +'"',//图片无法显示
+                noPic:'this.src="' + require('@/assets/images/pub/imgbreakdown.png') +'"',//图片无法显示
             }
         },
         created() {

@@ -1,11 +1,13 @@
 const path = require('path');
 const webpack = require('webpack');
+
 function resolve(dir) {
     return path.join(__dirname, dir)
 }
+
 module.exports = {
     /* 部署生产环境和开发环境下的URL：可对当前环境进行区分，baseUrl 从 Vue CLI 3.3 起已弃用，要使用publicPath */
-    publicPath: process.env.NODE_ENV === 'prod' ? './' : '/',
+    publicPath: process.env.NODE_ENV === 'prod' ? './' : './',
     /* 输出文件目录：在npm run build时，生成文件的目录名称 */
     outputDir: 'dist',
     /* 放置生成的静态资源 (js、css、img、fonts) 的 (相对于 outputDir 的) 目录 */
@@ -22,7 +24,7 @@ module.exports = {
         open: false,
         /* 设置为0.0.0.0则所有的地址均能访问 */
         host: '0.0.0.0',
-        port: 8081,
+        port: 8101,
         https: false,
         hotOnly: false,
         /* 使用代理 */
@@ -68,11 +70,12 @@ module.exports = {
             .end()
 
 
+
     },
     configureWebpack: () => ({
         resolve: {
             alias: {
-                '@': path.resolve('./src')
+                '@': path.resolve('src')
             }
         }
     }),

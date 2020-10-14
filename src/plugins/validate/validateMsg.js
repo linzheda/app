@@ -87,6 +87,11 @@ export class validateMsg {
         }
     }
 
+    //移除校验规则
+    removeValidateRules(name){
+        return pluginInstance.removeValidateRules(name,this);
+    }
+
     checkAll(autoTip=true,checklist,options){
         return pluginInstance.checkAll(checklist,options,this,autoTip);
     }

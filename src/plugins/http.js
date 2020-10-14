@@ -1,8 +1,7 @@
 import axios from 'axios'
 import store from '../store'
-import {Dialog} from 'vant';
-import {Toast} from 'vant';
-import utils from '../utils/utils';
+import {Dialog,Toast} from 'vant';
+import utils from "@/utils/utils";
 
 
 // 创建axios实例
@@ -38,6 +37,9 @@ instance.interceptors.response.use(
             }
             return Promise.reject(response);
         } else {
+            if (utils.isNotEmpty(response.headers['authorization'])) {
+                store.dispatch("updateToken", response.headers['authorization']);
+            }
             return response.data;
         }
     },
@@ -47,7 +49,14 @@ instance.interceptors.response.use(
                 title: '温馨提示',
                 message: error
             }).then(() => {
-                location.reload();
+                store.dispatch('loginOut',0).then(() => {
+                    location.reload();// 为了重新实例化vue-router对象 避免bug
+                });
+            });
+        }else {
+            Toast({
+                type: 'fail',
+                message: error,
             });
         }
         console.log('err' + error);// for debug
@@ -59,7 +68,7 @@ instance.interceptors.response.use(
 function transformRequest(data) {
     let str = [];
     for (let key in data) {
-        let value=utils.isEmpty(data[key])?'':data[key].trim();
+        let value=utils.isEmpty(data[key])?'':data[key];
         str.push(encodeURIComponent(key) + "=" + encodeURIComponent(value));
     }
     return str.join("&");
@@ -72,6 +81,9 @@ for(let key in process.env){
         let newkey = key.replace("VUE_APP_", '').replace("_URL", '');
         newkey = newkey.toLocaleLowerCase();
         result[newkey] = process.env[key];
+        if(newkey==='base'&&process.env.NODE_ENV==='dev'){
+            result[newkey] = '/api/';
+        }
     }
 }
 const urlApi = result;
@@ -79,9 +91,11 @@ const urlApi = result;
 
 const get = (url, params = {}, isCheck = true, baseUrl = urlApi['base'],isTransform=true) => {
     url = baseUrl + url;
+    //转换为键值对的形式
     if(isTransform){
         params=transformRequest(params)
     }
+    //检查约定的状态码
     if (isCheck) {
         return instance.get(url, params).then(res => {
             if (res.code != 200) {
@@ -107,6 +121,7 @@ const post = (url, params = {}, isCheck = true, baseUrl = urlApi['base'],isTrans
     if(isTransform){
         params=transformRequest(params)
     }
+    //检查约定的状态码
     if (isCheck) {
         return instance.post(url, params).then(res => {
             if (res.code != 200) {

@@ -23,6 +23,7 @@ export default{
         IDCard: "请输入合法的身份证号码",
         phone: "请输入合法的手机号码",
         password: "密码必须符合以下要求：长度为8~16位，至少包含一个大写字母、一个小写字母、一个数字、以及一个特殊符号",
+        password2: "密码必须符合以下要求：长度为8~16位，至少8个字符，至少1个大写字母，1个小写字母和1个数字",
         email2: "请输入有效的电子邮件地址",
         number_0: "请输入非零的有效数字",
         digits_0: "请输入非零的整数",
@@ -118,56 +119,62 @@ export default{
         //小数位数n位
         decimal: function (value, element, param) {
             if (value == null || this.trim(value) == "") return true;
-            var rex = new RegExp("^-?\\d+(.\\d{" + param[0] + "," + param[0] + "})$");
+            let rex = new RegExp("^-?\\d+(.\\d{" + param[0] + "," + param[0] + "})$");
             return rex.test(value);
         },
         //小数位数至少n位
         mindecimal: function (value, element, param) {
             if (value == null || this.trim(value) == "") return true;
-            var rex = new RegExp("^-?\\d+(.\\d{" + param[0] + ",})$");
+            let rex = new RegExp("^-?\\d+(.\\d{" + param[0] + ",})$");
             return rex.test(value);
         },
         //小数位数最多n位
         maxdecimal: function (value, element, param) {
             if (value == null || this.trim(value) == "") return true;
-            var rex = new RegExp("^-?\\d+(.\\d{1," + param[0] + "})?$");
+            let rex = new RegExp("^-?\\d+(.\\d{1," + param[0] + "})?$");
             return rex.test(value);
         },
         //小数位数范围n-m位
         rangedecimal: function (value, element, param) {
             if (value == null || this.trim(value) == "") return true;
-            var rex = new RegExp("^-?\\d+(.\\d{" + param[0] + "," + param[1] + "})$");
+            let rex = new RegExp("^-?\\d+(.\\d{" + param[0] + "," + param[1] + "})$");
             return rex.test(value);
         },
         //身份证号码
         IDCard: function (value) {
             if (value == null || this.trim(value) == "") return true;
-            var rex = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X)$)/;
+            let rex = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X)$)/;
             return rex.test(value);
         },
         //手机号码
         phone: function (value) {
             if (value == null || this.trim(value) == "") return true;
-            var rex = /^1[345789]\d{9}$/;
+            let rex = /^1[345789]\d{9}$/;
             return rex.test(value);
         },
         //手机号码（前面可能含有86）
         phone86: function (value) {
             if (value == null || this.trim(value) == "") return true;
-            var rex = /^(86)?1[345789]\d{9}$/;
+            let rex = /^(86)?1[345789]\d{9}$/;
             return rex.test(value);
         },
         //密码
         password: function (value) {
             if (value == null || this.trim(value) == "") return true;
-            var rex = /^(?=.*\d+)(?=.*[a-z]+)(?=.*[A-Z]+)(?=.*[^A-Za-z0-9\s]+)\S{8,16}$/;
+            let rex = /^(?=.*\d+)(?=.*[a-z]+)(?=.*[A-Z]+)(?=.*[^A-Za-z0-9\s]+)\S{8,16}$/;
+            return rex.test(value);
+        },
+        //密码2
+        password2: function (value) {
+            if (value == null || this.trim(value) == "") return true;
+            let rex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,16}$/;
             return rex.test(value);
         },
         //邮箱
         email2: function (value) {
             if (value == null || this.trim(value) == "") return true;
             // eslint-disable-next-line no-useless-escape
-            var rex = /^(([a-zA-Z0-9])*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}){1,2}$/;
+            let rex = /^(([a-zA-Z0-9])*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}){1,2}$/;
             return rex.test(value);
         },
         //有效的数字（非0）
@@ -185,13 +192,13 @@ export default{
         //英文字母（小写）
         English_0: function (value) {
             if (value == null) return true;
-            var rex = /^[a-z]{1,100}]?$/;
+            let rex = /^[a-z]{1,100}]?$/;
             return rex.test(value);
         },
         //非空格
         space: function (value) {
             if (value == null) return true;
-            var rex = /^\S+$/;
+            let rex = /^\S+$/;
             return rex.test(value);
         },
         trim(value) {

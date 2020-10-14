@@ -5,36 +5,12 @@ import store from '@/store'
 Vue.use(Router)
 
 let routes = [
-    {path: '*', name: '*', redirect: '/404'},
-    {path: '/404', name: '404', component: () => import('@/views/404')},
     {
         path: '/',
         name: '/',
         redirect: '/login',
         component: () => import('@/views/user/login/login'),
-        meta: {keepAlive: false}
-    },
-    {path: '/login', name: 'login', component: () => import('@/views/user/login/login'), meta: {keepAlive: false}},
-    {
-        path: '/home-tabs',
-        name: 'home-tabs',
-        component: () => import('@/views/home/home-tabs'),
-        meta: {keepAlive: true},
-        children: [
-            {
-                path: 'homepage',
-                name: 'homepage',
-                component: () => import('@/views/home/homepage'),
-                meta: {keepAlive: true}
-            },
-            {path: 'about', name: 'about', component: () => import('@/views/home/about'), meta: {keepAlive: true}},
-            {
-                path: 'service',
-                name: 'service',
-                component: () => import('@/views/home/service'),
-                meta: {keepAlive: true}
-            },
-        ]
+        meta: {keepAlive: false, requireLogin: false}
     },
 
 ]
@@ -95,6 +71,37 @@ let historyCount = history.getItem('count') * 1 || 0;
 history.setItem('/', 0);
 
 myRouter.beforeEach((to, from, next) => {
+    //判断是否拦截到登录页
+    let isNeedLogin = true;
+    if (to.meta.requireLogin != null && to.meta.requireLogin === false) {
+        isNeedLogin = false;
+    }
+    if (isNeedLogin) {//需要拦截
+        if (store.getters.token == null || store.getters.id == null) {
+            next({name: '/'});
+            return;
+        }else{
+            if((store.getters.menus == null || store.getters.menus.length == 0) && localStorage.getItem("menus")!=null ){
+                store.dispatch("addRoutes",[...JSON.parse(localStorage.getItem("menus"))]).then(()=>{
+                    if(to.fullPath.includes('404')){
+                        let  name =to.redirectedFrom.substr(to.redirectedFrom.lastIndexOf('/')+1)
+                        next({name:name});
+                    }
+                })
+            }else{
+                //前进刷新后退不刷新
+                doKeep(to, from)
+                next();
+            }
+        }
+    }else{
+        //前进刷新后退不刷新
+        doKeep(to, from)
+        next();
+    }
+});
+
+function doKeep(to, from){
     let toDirection = to.params.direction;
     if (toDirection) {
         store.commit('SET_DIRECTION', toDirection);
@@ -142,11 +149,11 @@ myRouter.beforeEach((to, from, next) => {
             from.meta.keepAlive = true;
         }
     }
-    next();
-});
+}
 
 export function resetRouter() {
-    myRouter.replace('/login');
+    const newRouter = createRouter()
+    myRouter.matcher = newRouter.matcher // reset router
 }
 
 export default myRouter

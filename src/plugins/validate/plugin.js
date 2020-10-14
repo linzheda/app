@@ -30,6 +30,13 @@ class validateUtil {
                     pluginInstance.bindfunc(el, binding, vnode, oldnode);
                 }else{
                     let input=el.getElementsByTagName('input');
+                    if(!input[0].getAttributeNames().includes('validate-type')){
+                        el.getAttributeNames().forEach(item=>{
+                            if(item.startsWith('validate-')||item==='data-rules'){
+                                input[0].setAttribute(item,el.getAttribute(item))
+                            }
+                        })
+                    }
                     pluginInstance.bindfunc(input[0], binding, vnode, oldnode);
                 }
             },
@@ -194,6 +201,17 @@ class validateUtil {
             vm.$validator = validate;
         }
         return vm.$validator;
+    }
+
+    //移除校验规则
+    removeValidateRules(name,validate){
+        for(let key of Object.keys(validate._validateRules)){
+            if(key==name){
+                delete validate._validateRules[key];
+                delete validate._validateMsgs[key];
+                delete validate._validatePositions[key];
+            }
+        }
     }
 
     checkAll(ckecklist,options,validate,autoTip=true){

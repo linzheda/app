@@ -1,10 +1,9 @@
 <template>
     <div id="app">
         <v-touch v-on:swiperight="onSwipeRight" :swipe-options="{direction: 'horizontal', threshold: 50}">
-            <transition mode="out-in" :duration="{ enter: 100, leave: 200 }"
-                        v-bind:leave-active-class="leaveActiveClass" v-bind:enter-active-class="enterActiveClass">
+            <transition :name="transitionName">
                 <keep-alive :include="keepArray">
-                    <router-view style="min-height: 100vh" ></router-view>
+                    <router-view  class="router-view" ></router-view>
                 </keep-alive>
             </transition>
         </v-touch>
@@ -15,9 +14,7 @@
         name: 'app',
         data() {
             return {
-                transitionName: 'fade',
-                enterActiveClass: '',
-                leaveActiveClass: 'animated fadeOutLeft'
+                transitionName: 'slide-left',
             }
         },
         computed: {
@@ -30,24 +27,22 @@
         },
         watch: {
             direction(val) {
-                console.log("测试方向" + val);
+                console.log("路由方向" + val);
                 if (val == 'forward') {
-                    this.enterActiveClass = 'animated fadeInRight';
-                    this.leaveActiveClass = 'animated fadeOutLeft';
+                    this.transitionName= 'slide-left';
                 } else if (val == 'back') {
-                    this.enterActiveClass = 'animated fadeInLeft';
-                    this.leaveActiveClass = 'animated fadeOutRight'
+                    this.transitionName= 'slide-right';
                 } else {
-                    this.enterActiveClass = '';
-                    this.leaveActiveClass = '';
+                    this.transitionName = '';
                 }
             },
             keepArray(val) {
-                console.log("测试要缓存的组件列表" + val);
+                console.log("缓存的组件列表" + val);
             }
         },
         created() {
             this.$store.dispatch('initEnv',process.env.NODE_ENV);
+            this.$store.dispatch('initAppName',process.env.VUE_APP_NAME);
         },
         methods: {
             onSwipeRight() {
@@ -87,6 +82,37 @@
             justify-content: center;
             height: 100%;
         }
+    }
+
+    /* 切页动画 */
+    .router-view {
+        position: absolute;
+        top: 0;
+        width: 100%;
+    }
+    .slide-right-enter-active,
+    .slide-right-leave-active,
+    .slide-left-enter-active,
+    .slide-left-leave-active {
+        will-change: transform;
+        transition: all 250ms;
+        position: absolute;
+    }
+    .slide-right-enter {
+        opacity: 0;
+        transform: translate3d(-100%, 0, 0);
+    }
+    .slide-right-leave-active {
+        opacity: 0;
+        transform: translate3d(100%, 0, 0);
+    }
+    .slide-left-enter {
+        opacity: 0;
+        transform: translate3d(100%, 0, 0);
+    }
+    .slide-left-leave-active {
+        opacity: 0;
+        transform: translate3d(-100%, 0, 0);
     }
 
 

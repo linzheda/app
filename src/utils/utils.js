@@ -235,6 +235,16 @@ class utils {
         }
     }
 
+    static countPercent(fz,fm,fixed=2){
+        let result = '';
+        if(this.isEmpty(fm)||fm==0){
+            result='';
+        }else{
+            result = (parseFloat(fz) / parseFloat(fm) * 100).toFixed(fixed)+'%';
+        }
+        return result;
+    }
+
     //关键信息隐藏
     static hideCode(str, frontLen, endLen) {
         if (this.isEmpty(str)) {
@@ -261,3 +271,4 @@ class utils {
 }
 
 export default utils
+
