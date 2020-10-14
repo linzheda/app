@@ -22,6 +22,7 @@
 
 <script>
     import PasswordField from "@/components/passwordField/passwordField";
+    import {Toast} from "vant";
 
     export default {
         name: "updatePassword",
@@ -46,11 +47,22 @@
                         newPassword:this.newPassword,
                     };
                     this.$http.post('access/user/updatePassword',param).then(res=>{
-                        console.log(res)
+                       if(res['data']){
+                           Toast({
+                               type: 'success',
+                               message: res['msg'],
+                           });
+                           this.$store.dispatch("loginOut", 1).then(() => {
+                               location.reload();
+                           });
+                       }else{
+                           Toast({
+                               type: 'fail',
+                               message: res['msg'],
+                           });
+                       }
                     });
-
                 }
-
             }
         }
     }

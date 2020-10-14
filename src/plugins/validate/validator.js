@@ -23,7 +23,7 @@ export default{
         IDCard: "请输入合法的身份证号码",
         phone: "请输入合法的手机号码",
         password: "密码必须符合以下要求：长度为8~16位，至少包含一个大写字母、一个小写字母、一个数字、以及一个特殊符号",
-        password2: "密码必须符合以下要求：长度为8~16位，至少8个字符，至少1个大写字母，1个小写字母和1个数字",
+        password2: "密码必须符合以下要求：长度为8~16位，至少1个大写字母，1个小写字母和1个数字",
         email2: "请输入有效的电子邮件地址",
         number_0: "请输入非零的有效数字",
         digits_0: "请输入非零的整数",
@@ -167,7 +167,7 @@ export default{
         //密码2
         password2: function (value) {
             if (value == null || this.trim(value) == "") return true;
-            let rex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,16}$/;
+            let rex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{8,16}$/;
             return rex.test(value);
         },
         //邮箱
