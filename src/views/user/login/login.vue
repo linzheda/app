@@ -14,7 +14,7 @@
                        data-rules="required" validate-name="login1" validate-type="keyup"
                        validate-tips-required="请输入用户名">
             </div>
-            <div class="error">{{errors.get('login1')}}</div>
+            <div class="tui-error">{{errors.get('login1')}}</div>
             <div class="row">
                 <div class="label">
                     <svg-icon icon-class="password"></svg-icon>
@@ -23,13 +23,13 @@
                        v-validate data-rules="required" validate-name="login2" validate-type="keyup"
                        validate-tips-required="请输入密码">
             </div>
-            <div class="error">{{errors.get('login2')}}</div>
-            <a href="javascript:void(0)" class="forgot">忘记密码？</a>
+            <div class="tui-error">{{errors.get('login2')}}</div>
+            <router-link class="forgot" :to="{name:'forgetPassword'}">忘记密码？</router-link>
         </div>
         <div class="btn" v-on:click="login">登录</div>
 
         <div class="foot">
-            还没有账号<a href="javascript:void(0)">去创建</a>?
+            还没有账号<router-link class="forgot" :to="{name:'register'}">去创建</router-link>?
         </div>
     </div>
 </template>
@@ -86,7 +86,7 @@
         width: 100%;
         height: 100vh;
         padding: 100px 30px 0 30px;
-        background: url('~@/assets/images/login/login-bg.png') no-repeat top center #fff;
+        background: url('~@/assets/images/user/login/login-bg.png') no-repeat top center #fff;
         background-size: cover;
         box-sizing: border-box;
         .title{

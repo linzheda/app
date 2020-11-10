@@ -69,6 +69,9 @@ function transformRequest(data) {
     let str = [];
     for (let key in data) {
         let value=utils.isEmpty(data[key])?'':data[key];
+        if(typeof value=='string'){
+            value=value.trim();
+        }
         str.push(encodeURIComponent(key) + "=" + encodeURIComponent(value));
     }
     return str.join("&");
@@ -128,10 +131,8 @@ const post = (url, params = {}, isCheck = true, baseUrl = urlApi['base'],isTrans
                 Toast({
                     type: 'fail',
                     message: res.msg,
-                    onClose: () => {
-                        return res;
-                    },
                 });
+                return res;
             } else {
                 return res;
             }

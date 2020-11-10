@@ -7,7 +7,7 @@
                 <div class="con">
                     <div class="top"><b>{{name}}</b>扫码下载，体验更多内容</div>
                     <div class="box">
-                        <img :src="require('@/assets/images/qrcode/qrcode.png')"/>
+                        <img :src="require('@/assets/images/user/qrcode/qrcode.png')"/>
                         <span>{{name}}APP客户端</span>
                     </div>
                 </div>
@@ -38,7 +38,7 @@
 
 <style scoped lang="less">
     .eui-qrcode {
-        background: url('~@/assets/images/qrcode/qrcode-bg.png') no-repeat top center;
+        background: url('~@/assets/images/user/qrcode/qrcode-bg.png') no-repeat top center;
         background-size: cover;
         position: absolute;
         top: 0;
@@ -63,7 +63,7 @@
         text-align: center;
         font-size: 16px;
         color: rgba(255, 255, 255, .7);
-        background: url('~@/assets/images/qrcode//qrcode-man.png') no-repeat left top;
+        background: url('~@/assets/images/user/qrcode//qrcode-man.png') no-repeat left top;
         background-size: 100px;
     }
 

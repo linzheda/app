@@ -2,7 +2,7 @@
     <div class="about tui-wh100">
         <div class="banner">
             <div class="user-center">
-                <img :src="require('@/assets/images/about/head.png')">
+                <img :src="require('@/assets/images/user/about/head.png')">
                 <b>{{userName}}</b>
             </div>
         </div>
@@ -89,7 +89,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: url("~@/assets/images/about/banner.png") no-repeat center bottom;
+            background: url("~@/assets/images/user/about/banner.png") no-repeat center bottom;
             background-size: 100%;
             pointer-events: none;
         }

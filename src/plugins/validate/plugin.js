@@ -214,6 +214,7 @@ class validateUtil {
         }
     }
 
+    //检查所有
     checkAll(ckecklist,options,validate,autoTip=true){
         let result=true;
         if(!ckecklist||!ckecklist.length){
@@ -245,6 +246,25 @@ class validateUtil {
         }
         return result;
     }
+
+    //检查特定的选项
+    checkArr(checkArr,options,validate,autoTip=true){
+        let ckecklist=[];
+        for(let key of Object.keys(validate._validateRules)){
+            if(checkArr.includes(key)){
+                let checkItem={
+                    name:key,
+                    rules:validate._validateRules[key],
+                    msg:validate._validateMsgs[key],
+                    value:validate._validatePositions[key].value,
+                    el:validate._validatePositions[key],
+                };
+                ckecklist.push(checkItem);
+            }
+        }
+        return this.checkAll(ckecklist,options,validate,autoTip);
+    }
+
 }
 
 export default validateUtil;

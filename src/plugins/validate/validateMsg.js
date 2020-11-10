@@ -92,9 +92,18 @@ export class validateMsg {
         return pluginInstance.removeValidateRules(name,this);
     }
 
+    //检查所有
     checkAll(autoTip=true,checklist,options){
         return pluginInstance.checkAll(checklist,options,this,autoTip);
     }
+
+    //检查指定数组
+    checkArr(checklist,autoTip=true,options){
+        return pluginInstance.checkArr(checklist,options,this,autoTip);
+    }
+
+
+
     clear(){
         this.errors.clear();
     }

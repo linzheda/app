@@ -2,55 +2,88 @@
 /*--------------------------------------------------------------*/
 
 /*左浮动*/
-.tui-left{float: left;}
-/*右浮动*/
-.tui-right{float: right}
-/*鼠标移上去变小手*/
-.tui-cursor{cursor:pointer;}
-/*宽高百百分百*/
-.tui-wh100{width: 100%;height: 100%;}
-/*居中*/
-.tui-center{text-align: center;}
-/* 设置为 */
-.tui-inline-block{display: inline-block}
-/*背景为浅绿色*/
-.tui-bgw-tiffany{background: #23C6C8;}
-/*字白色*/
-.tui-color-white{color: white;}
+.tui-left {
+  float: left;
+}
 
-.tui-content{
+/*右浮动*/
+.tui-right {
+  float: right
+}
+
+/*鼠标移上去变小手*/
+.tui-cursor {
+  cursor: pointer;
+}
+
+/*宽高百百分百*/
+.tui-wh100 {
+  width: 100%;
+  height: 100%;
+}
+
+/*居中*/
+.tui-center {
+  text-align: center;
+}
+
+/* 设置为 */
+.tui-inline-block {
+  display: inline-block
+}
+
+/*背景为浅绿色*/
+.tui-bgw-tiffany {
+  background: #23C6C8;
+}
+
+/*字白色*/
+.tui-color-white {
+  color: white;
+}
+
+/*内容*/
+.tui-content {
   width: 100%;
   margin-top: 44px;
 }
 
+/*校验的错误提示*/
+.tui-error {
+  color: red;
+  font-size: 12px;
+}
+
 /*手机端结合vant的样式*/
 /*向右箭头*/
-.tui-navigate-right{
+.tui-navigate-right {
   position: relative;
   display: block;
   overflow: hidden;
   text-align: left;
-  &:after{
+
+  &:after {
     position: absolute;
     color: #bbb;
     right: 15px;
-    font-family:'vant-icon';
+    font-family: 'vant-icon';
     content: '\F00A';
     display: inline-block;
   }
 }
 
 /*向左箭头*/
-.tui-navigate-left{
+.tui-navigate-left {
   position: relative;
   display: block;
   overflow: hidden;
   text-align: left;
-  &:after{
+
+  &:after {
     position: absolute;
     color: #bbb;
     right: 15px;
-    font-family:'vant-icon';
+    font-family: 'vant-icon';
     content: '\F008';
     display: inline-block;
   }

@@ -1558,10 +1558,10 @@
   resolved "https://registry.npm.taobao.org/@types/q/download/@types/q-1.5.2.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Fq%2Fdownload%2F%40types%2Fq-1.5.2.tgz#690a1475b84f2a884fd07cd797c00f5f31356ea8"
   integrity sha1-aQoUdbhPKohP0HzXl8APXzE1bqg=
 
-"@vant/icons@1.2.3":
-  version "1.2.3"
-  resolved "https://registry.npm.taobao.org/@vant/icons/download/@vant/icons-1.2.3.tgz?cache=0&sync_timestamp=1593673015242&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40vant%2Ficons%2Fdownload%2F%40vant%2Ficons-1.2.3.tgz#c46b7ddd32363f790944c3af974b73bda80df7a1"
-  integrity sha1-xGt93TI2P3kJRMOvl0tzvagN96E=
+"@vant/icons@1.3.0":
+  version "1.3.0"
+  resolved "http://192.168.200.127:8081/repository/npm-public/@vant/icons/-/icons-1.3.0.tgz#94f4c93122fd7331e0e00df55804779aead8c9c2"
+  integrity sha1-lPTJMSL9czHg4A31WAR3murYycI=
 
 "@vue/babel-helper-vue-jsx-merge-props@^1.0.0":
   version "1.0.0"
@@ -2198,10 +2198,10 @@ amfe-flexible@^2.2.1:
   resolved "https://registry.npm.taobao.org/amfe-flexible/download/amfe-flexible-2.2.1.tgz#353f00289e4d38ca88a21eb3854420308af0b559"
   integrity sha1-NT8AKJ5NOMqIoh6zhUQgMIrwtVk=
 
-animate.css@^3.7.2:
-  version "3.7.2"
-  resolved "https://registry.npm.taobao.org/animate.css/download/animate.css-3.7.2.tgz#e73e0d50e92cb1cfef1597d9b38a9481020e08ea"
-  integrity sha1-5z4NUOkssc/vFZfZs4qUgQIOCOo=
+animate.css@^4.1.1:
+  version "4.1.1"
+  resolved "http://192.168.200.127:8081/repository/npm-public/animate.css/-/animate.css-4.1.1.tgz#614ec5a81131d7e4dc362a58143f7406abd68075"
+  integrity sha1-YU7FqBEx1+TcNipYFD90BqvWgHU=
 
 ansi-colors@^3.0.0:
   version "3.2.4"
@@ -5830,6 +5830,11 @@ js-levenshtein@^1.1.3:
   version "1.1.6"
   resolved "https://registry.npm.taobao.org/js-levenshtein/download/js-levenshtein-1.1.6.tgz#c6cee58eb3550372df8deb85fad5ce66ce01d59d"
   integrity sha1-xs7ljrNVA3LfjeuF+tXOZs4B1Z0=
+
+js-md5@^0.7.3:
+  version "0.7.3"
+  resolved "http://192.168.200.127:8081/repository/npm-public/js-md5/-/js-md5-0.7.3.tgz#b4f2fbb0b327455f598d6727e38ec272cd09c3f2"
+  integrity sha1-tPL7sLMnRV9ZjWcn447Ccs0Jw/I=
 
 js-message@1.0.5:
   version "1.0.5"
@@ -9601,13 +9606,13 @@ validate-npm-package-license@^3.0.1:
     spdx-correct "^3.0.0"
     spdx-expression-parse "^3.0.0"
 
-vant@^2.2.6:
-  version "2.9.0"
-  resolved "https://registry.npm.taobao.org/vant/download/vant-2.9.0.tgz#f8b95f83608d3e6b01c384f22e42224e4501ce7b"
-  integrity sha1-+Llfg2CNPmsBw4TyLkIiTkUBzns=
+vant@^2.10.9:
+  version "2.10.9"
+  resolved "http://192.168.200.127:8081/repository/npm-public/vant/-/vant-2.10.9.tgz#311e7f53541067f45de07c23020ac23339272615"
+  integrity sha1-MR5/U1QQZ/Rd4HwjAgrCMzknJhU=
   dependencies:
     "@babel/runtime" "7.x"
-    "@vant/icons" "1.2.3"
+    "@vant/icons" "1.3.0"
     "@vue/babel-helper-vue-jsx-merge-props" "^1.0.0"
     vue-lazyload "1.2.3"
 

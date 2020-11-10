@@ -1,11 +1,14 @@
 <template>
-    <header class="eui-header">
+    <header class="header">
         <a class="tui-navigate-left tui-left" v-goback:[callbackKey]="data"> </a>
         <h1 class="title">
             <slot>
                 {{title}}
             </slot>
         </h1>
+        <div class="tui-right" >
+            <slot name="right"></slot>
+        </div>
     </header>
 </template>
 
@@ -46,7 +49,7 @@
 </script>
 
 <style scoped lang="less">
-    .eui-header {
+    .header {
         background: #1a7bdd;
         color: #fff;
         position: fixed;

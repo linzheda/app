@@ -5,11 +5,11 @@
             <div class="do-box">
                 <password-field v-model="oldPassword" label="旧密码" placeholder="请输入旧密码" v-validate
                                 data-rules="required" validate-name="oldPassword" validate-type="keyup"></password-field>
-                <div class="error">{{errors.get('oldPassword')}}</div>
+                <div class="tui-error">{{errors.get('oldPassword')}}</div>
                 <password-field v-model="newPassword" label="新密码" placeholder="请输入新密码"  v-validate
                                 data-rules="required password2" validate-name="newPassword" validate-type="keyup"></password-field>
-                <div class="error">{{errors.get('newPassword')}}</div>
-                <p>密码必须符合以下要求：长度为8~16位，至少8个字符，至少1个大写字母，1个小写字母和1个数字</p>
+                <div class="tui-error">{{errors.get('newPassword')}}</div>
+                <p>密码必须符合以下要求：长度为8~16位，至少1个大写字母，1个小写字母和1个数字</p>
                 <div style="margin: 16px;">
                     <van-button round block type="info" @click="onSubmit">
                         提交
@@ -74,9 +74,6 @@
             font-size: 12px;
             color: #969696;
         }
-        .error{
-            color: red;
-            font-size: 12px;
-        }
+
     }
 </style>
