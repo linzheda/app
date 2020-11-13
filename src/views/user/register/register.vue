@@ -32,7 +32,6 @@
                 <van-button type="info" block round size="small" class="submit-btn" @click="checkNextOne">下一步
                 </van-button>
             </div>
-
             <!--设置新密码-->
             <div class="do-box" v-else-if="active===1">
                 <password-field v-model="newPassword1" label="设置密码" placeholder="请设置密码" v-validate
@@ -50,7 +49,19 @@
                     </van-button>
                 </div>
             </div>
-
+            <!--修改成功返回登录页-->
+            <div class="do-box" v-else-if="active===2">
+                <div class="reg-ok">
+                    <img :src="require('@/assets/images/user/forgetpassword/reg-ok.png')"/>
+                    <b>恭喜您，注册成功！</b>
+                    <span>您可使用【登录账号或手机号】进行<br/>账户登录</span>
+                </div>
+                <div style="margin: 16px;">
+                    <van-button round block type="info" @click="checkNextTree">
+                        我知道了
+                    </van-button>
+                </div>
+            </div>
 
         </div>
     </div>
@@ -65,6 +76,7 @@
         components: {PasswordField},
         data() {
             return {
+                type:1,//验证码类型 1注册2登录3忘记密码
                 active: 0,//当前步骤
                 tel: '',//手机号
                 username: '',//用户名
@@ -86,9 +98,10 @@
                 if (this.$validator.checkArr(['tel'])) {
                     this.isShowSendBtn = false;
                     let param = {
-                        tel: this.tel
+                        tel: this.tel,
+                        type:this.type
                     };
-                    this.$http.post('access/user/sendSmsForReg', param).then(res => {
+                    this.$http.post('access/user/sendSms', param).then(res => {
                         if (res['data']) {
                             this.trueSms = res['data'];
                         }
@@ -110,7 +123,8 @@
                 if (this.$validator.checkArr(['tel', 'sms'])) {
                     let param = {
                         tel: this.tel,
-                        sms: this.sms
+                        sms: this.sms,
+                        type:this.type
                     };
                     this.$http.post('access/user/checkSms', param).then(res => {
                         if (res['data']) {
@@ -129,7 +143,7 @@
                     });
                 }
             },
-            /*点击下一步 修改密码*/
+            /*点击下一步 注册*/
             checkNextTwo() {
                 if (this.$validator.checkArr(['newPassword1', 'newPassword2'])) {
                     if (this.newPassword1 !== this.newPassword2) {
@@ -140,16 +154,17 @@
                     } else {
                         let param = {
                             tel: this.tel,
-                            password: this.newPassword1
+                            password: this.newPassword1,
+                            name:this.username,
+                            loginname:this.tel,
+                            status:1,
                         };
-                        this.$http.post('access/user/forgetPassWord', param).then(res => {
+                        this.$http.post('access/user/register', param).then(res => {
                             if (res['data']) {
                                 this.active++;
                             }
                         });
                     }
-
-
                 }
 
             },
@@ -178,6 +193,30 @@
             color: #969696;
         }
 
+    }
+
+    .reg-ok {
+        padding-top: 30px;
+        text-align: center;
+
+        img {
+            display: block;
+            margin: 0 auto;
+            width: 50%;
+        }
+
+        b {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 16px;
+            color: #ffa29d;
+        }
+
+        span {
+            display: block;
+            color: #999;
+            font-size: 12px;
+        }
     }
 
     .submit-btn {

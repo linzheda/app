@@ -73,6 +73,7 @@
         components: {PasswordField},
         data() {
             return {
+                type:3,//验证码类型 1注册2登录3忘记密码
                 active: 0,//当前步骤
                 tel: '',//手机号
                 trueSms: '',//正确的短信验证码
@@ -92,7 +93,8 @@
                 if (this.$validator.checkArr(['tel'])) {
                     this.isShowSendBtn = false;
                     let param = {
-                        tel: this.tel
+                        tel: this.tel,
+                        type:this.type
                     };
                     this.$http.post('access/user/sendSms', param).then(res => {
                         if (res['data']) {
@@ -116,7 +118,8 @@
                 if (this.$validator.checkArr(['tel', 'sms'])) {
                     let param = {
                         tel: this.tel,
-                        sms: this.sms
+                        sms: this.sms,
+                        type:this.type
                     };
                     this.$http.post('access/user/checkSms', param).then(res => {
                         if (res['data']) {
