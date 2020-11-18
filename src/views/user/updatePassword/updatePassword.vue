@@ -23,6 +23,7 @@
 <script>
     import PasswordField from "@/components/passwordField/passwordField";
     import {Toast} from "vant";
+    import md5 from 'js-md5';
 
     export default {
         name: "updatePassword",
@@ -43,8 +44,8 @@
                 if(this.$validator.checkAll()){
                     let param={
                         id:this.$store.getters.id,
-                        oldPassword:this.oldPassword,
-                        newPassword:this.newPassword,
+                        oldPassword:md5(this.oldPassword),
+                        newPassword:md5(this.newPassword),
                     };
                     this.$http.post('access/user/updatePassword',param).then(res=>{
                        if(res['data']){

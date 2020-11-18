@@ -70,6 +70,7 @@
 <script>
     import PasswordField from "../../../components/passwordField/passwordField";
     import {Toast} from "vant";
+    import md5 from "js-md5";
 
     export default {
         name: "register",
@@ -154,7 +155,7 @@
                     } else {
                         let param = {
                             tel: this.tel,
-                            password: this.newPassword1,
+                            password: md5(this.newPassword1),
                             name:this.username,
                             loginname:this.tel,
                             status:1,

@@ -67,6 +67,7 @@
 <script>
     import {Toast} from "vant";
     import PasswordField from "../../../components/passwordField/passwordField";
+    import md5 from 'js-md5';
 
     export default {
         name: "forgetPassword",
@@ -149,7 +150,7 @@
                     } else {
                         let param = {
                             tel: this.tel,
-                            password: this.newPassword1
+                            password: md5(this.newPassword1)
                         };
                         this.$http.post('access/user/forgetPassWord', param).then(res => {
                             if (res['data']) {
