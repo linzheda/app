@@ -26,18 +26,23 @@ class validateUtil {
         Vue.directive('validate', {
             //指令第一次绑定到元素时调用
             bind: function (el, binding, vnode, oldnode) {
-                if(el.localName=='input'){
+                if (el.localName == 'input' || el.localName == 'textarea') {
                     pluginInstance.bindfunc(el, binding, vnode, oldnode);
-                }else{
-                    let input=el.getElementsByTagName('input');
-                    if(!input[0].getAttributeNames().includes('validate-type')){
-                        el.getAttributeNames().forEach(item=>{
-                            if(item.startsWith('validate-')||item==='data-rules'){
-                                input[0].setAttribute(item,el.getAttribute(item))
+                } else {
+                    let input = el.getElementsByTagName('input');
+                    if (input.length === 0) {
+                        input = el.getElementsByTagName('textarea');
+                    }
+                    if (input.length>0&&!input[0].getAttributeNames().includes('validate-type')) {
+                        el.getAttributeNames().forEach(item => {
+                            if (item.startsWith('validate-') || item === 'data-rules') {
+                                input[0].setAttribute(item, el.getAttribute(item))
                             }
                         })
                     }
-                    pluginInstance.bindfunc(input[0], binding, vnode, oldnode);
+                    if (input.length>0) {
+                        pluginInstance.bindfunc(input[0], binding, vnode, oldnode);
+                    }
                 }
             },
         })
