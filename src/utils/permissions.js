@@ -38,7 +38,7 @@ class permissions {
             store.dispatch('getAppMenus', home['id']).then(res2 => {
                 home['children'] = res2;
                 store.dispatch('addRoutes', [home]).then(() => {
-                    router.replace({name: home['name'],params:{direction:'replace'}})
+                    router.replace({name: home['name'], params: {direction: 'replace'}})
                 })
             });
         })
@@ -50,15 +50,34 @@ class permissions {
             let thisRoute = getThisRoute(route);
             store.dispatch('getAppMenus', thisRoute['id']).then(res => {
                 store.dispatch('addRoutes', res).then(() => {
-                    resolve(res);
+                    let result = doIcon(res);
+                    resolve(result);
                 })
             })
         });
     }
 
     //获取当前路由
-    static getCurrentRoute(route){
+    static getCurrentRoute(route) {
         return getThisRoute(route)
+    }
+
+
+    //新增路由
+    static addRoute(route) {
+        let routes = [];
+        if (Array.isArray(route)) {
+            routes = route;
+        } else if (route.constructor instanceof Object) {
+            routes.push(route)
+        }
+        return new Promise((resolve) => {
+            store.dispatch('addRoutes', routes, true).then(res => {
+                let result = doIcon(res);
+                resolve(result);
+            });
+        });
+
     }
 
 }
@@ -90,6 +109,23 @@ function getTreeNode(data, obj) {
     }
     fn(data); // 调用一下
     return result;
+}
+
+//处理图片
+function doIcon(res) {
+    res.forEach(item => {
+        if (utils.isNotEmpty(item['meta']['icon']) && item['meta']['icon'].includes(".")) {
+            item['meta']['icon'] = require("@/assets/images/" + item.meta.icon);
+        }
+        if (item.children) {
+            item.children.forEach(item => {
+                if (utils.isNotEmpty(item['meta']['icon']) && item['meta']['icon'].includes(".")) {
+                    item['meta']['icon'] = require("@/assets/images/" + item.meta.icon);
+                }
+            });
+        }
+    });
+    return res;
 }
 
 

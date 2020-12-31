@@ -1,12 +1,12 @@
 <template>
-    <header class="header">
-        <a class="tui-navigate-left tui-left" v-goback:[callbackKey]="data"> </a>
-        <h1 class="title">
-            <slot>
-                {{title}}
-            </slot>
-        </h1>
-        <div class="tui-right" >
+    <header class="header" :style="{'background-color': backgroundColor, color: fontColor}">
+        <van-icon name="arrow-left" ref="backbtn" v-goback:[callbackKey]="data"/>
+        <slot>
+            <h1 class="title">
+                {{pageTitle}}
+            </h1>
+        </slot>
+        <div class="tui-right">
             <slot name="right"></slot>
         </div>
     </header>
@@ -27,16 +27,30 @@
             callback: {
                 type: String,
                 default: null
-            }
+            },
+            title: {
+                type: String,
+                default: null
+            },
+            //背景色
+            backgroundColor: {
+                type: String,
+                default: '#ffffff' // 1a7bdd
+            },
+            //字体颜色
+            fontColor: {
+                type: String,
+                default: '#000000'
+            },
         },
         data() {
             return {
                 callbackKey: '',
-                title: ''
+                pageTitle: ''
             }
         },
         created() {
-            this.title = this.$route.meta['title'];
+            this.pageTitle = this.title == null ? this.$route.meta['title'] : this.title;
             if (this.needCallback && this.$utils.isEmpty(this.callback)) {
                 let arr = this.$store.getters.keepArray;
                 this.callbackKey = arr[arr.length - 2];
@@ -44,14 +58,16 @@
         },
         mounted() {
         },
-        methods: {}
+        methods: {
+            goBack() {
+                this.$refs.backbtn.click();
+            }
+        }
     }
 </script>
 
 <style scoped lang="less">
     .header {
-        background: #1a7bdd;
-        color: #fff;
         position: fixed;
         z-index: 10;
         top: 0;
@@ -59,22 +75,8 @@
         left: 0;
         height: 44px;
         padding-right: 10px;
-        padding-left: 10px;
-
-        .tui-navigate-left {
-            width: 20px;
-            height: 20px;
-            overflow: hidden;
-            margin-top: 12px;
-            padding: inherit;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-
-            &:after {
-                color: white;
-                font-size: 18px;
-            }
-        }
+        padding-left: 45px;
+        border-bottom: solid 1px #dcdee0;
 
         .title {
             font-size: 17px;
@@ -88,6 +90,14 @@
             width: auto;
             margin: 0;
             text-overflow: ellipsis;
+            text-align: center;
+        }
+
+        .van-icon-arrow-left {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            font-size: 24px;
         }
     }
 </style>

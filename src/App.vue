@@ -7,11 +7,14 @@
                 </keep-alive>
             </transition>
         </v-touch>
+        <back-top></back-top>
     </div>
 </template>
 <script>
+    import BackTop from "./components/backTop/backTop";
     export default {
         name: 'app',
+        components: {BackTop},
         data() {
             return {
                 transitionName: 'slide-left',

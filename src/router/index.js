@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import store from '@/store'
+import utils from '@/utils/utils'
 
 Vue.use(Router)
 
@@ -30,12 +31,7 @@ routerContext.keys().forEach(route => {
 
 //获取滚动条的位置
 function getScrollTop() {
-    let scroll_top = 0;
-    if (document.documentElement && document.documentElement.scrollTop) {
-        scroll_top = document.documentElement.scrollTop;
-    } else if (document.body) {
-        scroll_top = document.body.scrollTop;
-    }
+    let scroll_top = window.pageYOffset || document.body.scrollTop || document.documentElement.scrollTop;
     return scroll_top;
 }
 
@@ -53,7 +49,7 @@ const scrollBehavior = function (to, from, savedPosition) {
         }
         return new Promise((resolve) => {
             setTimeout(() => {
-                resolve({ x: 0, y: to.meta.savedPosition ||0})
+                resolve({x: 0, y: to.meta.savedPosition || 0})
             }, 300)
         });
     }
@@ -71,37 +67,59 @@ let historyCount = history.getItem('count') * 1 || 0;
 history.setItem('/', 0);
 
 myRouter.beforeEach((to, from, next) => {
-    //判断是否拦截到登录页
-    let isNeedLogin = true;
-    if (to.meta.requireLogin != null && to.meta.requireLogin === false) {
-        isNeedLogin = false;
-    }
-    if (isNeedLogin) {//需要拦截
-        if (store.getters.token == null || store.getters.id == null) {
-            next({name: '/'});
-            return;
-        }else{
-            if((store.getters.menus == null || store.getters.menus.length == 0) && localStorage.getItem("menus")!=null ){
-                store.dispatch("addRoutes",[...JSON.parse(localStorage.getItem("menus"))]).then(()=>{
-                    if(to.fullPath.includes('404')){
-                        let  name =to.redirectedFrom.substr(to.redirectedFrom.lastIndexOf('/')+1)
-                        next({name:name});
-                    }
-                })
-            }else{
-                //前进刷新后退不刷新
-                doKeep(to, from)
+    //说明需要拦截
+    if (utils.isNotEmpty(to.meta['require'])) {
+        intercept(to).then(res => {
+            doKeep(to, from)
+            if (res['isChange']) {
+                next(res['to']);
+            } else {
                 next();
             }
-        }
-    }else{
+
+        });
+    } else {
         //前进刷新后退不刷新
         doKeep(to, from)
         next();
     }
 });
 
-function doKeep(to, from){
+
+async function intercept(to) {
+    let result = {
+        isChange: false,
+        to: null
+    };
+    let checkArr =utils.isNotEmpty(to.params['require'])?to.params['require'].split(','):to.meta['require'].split(',');
+    await checkArr.forEach(item => {
+        if(!result.isChange){
+            switch (item) {
+                case 'login':
+                    result = requireLogin();
+                    break;
+                default:
+                    break;
+            }
+        }
+    });
+    return result
+}
+
+//判断是否需要拦截到登录页
+function requireLogin() {
+    let result = {
+        isChange: false,
+        to: null
+    };
+    if (store.getters.token == null || store.getters.id == null) {
+        result.isChange = true;
+        result.to = {name: '/'}
+    }
+    return result
+}
+
+function doKeep(to, from) {
     let toDirection = to.params.direction;
     if (toDirection) {
         store.commit('SET_DIRECTION', toDirection);
@@ -114,19 +132,21 @@ function doKeep(to, from){
             from.meta.keepAlive = true;
         } else if (toDirection == 'back') {
             store.commit('DELETE_KEEPARRAY', from.name);
-            from.meta.savedPosition=0;
+            from.meta.savedPosition = 0;
             from.meta.keepAlive = false;
             to.meta.keepAlive = true;
-        }else if(toDirection == 'replace'){
+        } else if (toDirection == 'replace') {
+            store.commit('DELETE_KEEPARRAY', from.name);
+            from.meta.savedPosition = 0;
+            from.meta.keepAlive = false;
             store.commit('ADD_KEEPARRAY', to.name);
             to.meta.keepAlive = true;
-            from.meta.keepAlive = true;
         }
     } else {
-        const toIndex = history.getItem(to.path);
-        const fromIndex = history.getItem(from.path);
+        const toIndex = store.getters.keepArray.findIndex(item => item == to.name);
+        const fromIndex = store.getters.keepArray.findIndex(item => item == from.name);
         // 判断并记录跳转页面是否访问过，以此判断跳转过渡方式
-        if (toIndex) {
+        if (toIndex>=0) {
             if (!fromIndex || parseInt(toIndex, 10) > parseInt(fromIndex, 10) || (toIndex === '0' && fromIndex === '0')) {
                 store.commit('SET_DIRECTION', 'forward');
                 store.commit('ADD_KEEPARRAY', to.name);
@@ -135,7 +155,7 @@ function doKeep(to, from){
             } else {
                 store.commit('SET_DIRECTION', 'back');
                 store.commit('DELETE_KEEPARRAY', from.name);
-                from.meta.savedPosition=0;
+                from.meta.savedPosition = 0;
                 from.meta.keepAlive = false;
                 to.meta.keepAlive = true;
             }
@@ -154,6 +174,8 @@ function doKeep(to, from){
 export function resetRouter() {
     const newRouter = createRouter()
     myRouter.matcher = newRouter.matcher // reset router
+    store.commit('SET_KEEPARRAY', []);
+    store.commit('SET_MENUS', []);
 }
 
 export default myRouter

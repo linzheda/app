@@ -267,6 +267,36 @@ class utils {
         return /^(https?:|mailto:|tel:)/.test(path)
     }
 
+    //获取身份证信息 type 1出生日期 2性别 3年龄
+    static  getIDCardInfo(IDCard, type) {
+        if (type == 1) {
+            //获取出生日期
+            let birth = IDCard.substring(6, 10) + "-" + IDCard.substring(10, 12) + "-" + IDCard.substring(12, 14);
+            return birth;
+        }
+        if (type == 2) {
+            //获取性别
+            if (parseInt(IDCard.substr(16, 1)) % 2 == 1) {
+                //男
+                return "男";
+            } else {
+                //女
+                return "女";
+            }
+        }
+        if (type == 3) {
+            //获取年龄
+            let myDate = new Date();
+            let month = myDate.getMonth() + 1;
+            let day = myDate.getDate();
+            let age = myDate.getFullYear() - IDCard.substring(6, 10) - 1;
+            if (IDCard.substring(10, 12) < month || IDCard.substring(10, 12) == month && IDCard.substring(12, 14) <= day) {
+                age++;
+            }
+            return age;
+        }
+    }
+
 
 }
 

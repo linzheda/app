@@ -110,10 +110,11 @@ const user = {
                 });
             });
         },
-        addRoutes({commit,state}, data) {
+        addRoutes({commit, state}, data) {
             return new Promise((resolve) => {
-                let routes= data.filter(item=>!state.menus.some(item2=>item.name===item2.name));
-                commit('SET_MENUS',state.menus.concat(routes));
+                let routes = data.filter(item => !state.menus.some(item2 => item.name === item2.name));
+                routes=filterAsyncRouter(routes);
+                commit('SET_MENUS', state.menus.concat(routes));
                 let arr2 = [
                     {
                         path: '/404',
@@ -123,7 +124,7 @@ const user = {
                     },
                     {path: '*', redirect: '/404', meta: {title: '404', icon: '404'}, hidden: true},
                 ];
-                if(routes.length>0){
+                if (routes.length > 0) {
                     router.addRoutes(routes.concat(arr2));
                 }
                 resolve(data)
@@ -137,7 +138,7 @@ const user = {
 // eslint-disable-next-line no-unused-vars
 function filterAsyncRouter(asyncRouterMap) { //遍历后台传来的路由字符串，转换为组件对象
     const accessedRouters = asyncRouterMap.filter(route => {
-        if (route.component) {
+        if (route.component && typeof route.component == 'string') {
             route.component = loadView(route.component)
         }
         if (route.children && route.children.length) {
@@ -152,6 +153,7 @@ function loadView(view) {
     // 路由懒加载
     return () => import('@/views/' + view );
 }
+
 function getAccessRoute(userId, pid) {
     return new Promise((resolve) => {
         let param = {
