@@ -1,18 +1,22 @@
+/**
+* 描述:
+*
+**/
 <template>
-    <div class="homepage tui-wh100">
-            测试首页
+    <div class="Test tui-wh100">
+        <page-header>测试</page-header>
+        <div class="tui-content">
+        </div>
     </div>
 </template>
 
 <script>
     export default {
-        name: "homepage",
+        name: "Test",
         data() {
             return {}
         },
         created() {
-        },
-        mounted() {
         },
         methods: {}
     }

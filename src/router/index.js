@@ -15,12 +15,8 @@ let routes = [
     },
 
 ]
-const routerContext = require.context('./', true, /\.js$/)
+const routerContext = require.context('./static', true, /\.js$/)
 routerContext.keys().forEach(route => {
-    // 如果是根目录的 index.js 、不处理
-    if (route.startsWith('./index')) {
-        return
-    }
     const routerModule = routerContext(route)
     /**
      * 兼容 import export 和 require module.export 两种规范
@@ -172,10 +168,10 @@ function doKeep(to, from) {
 }
 
 export function resetRouter() {
-    const newRouter = createRouter()
-    myRouter.matcher = newRouter.matcher // reset router
+    const newRouter = createRouter();
     store.commit('SET_KEEPARRAY', []);
     store.commit('SET_MENUS', []);
+    myRouter.matcher = newRouter.matcher // reset router
 }
 
 export default myRouter

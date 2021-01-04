@@ -33,7 +33,13 @@ class permissions {
 
     //初始化路由
     static initRoutes() {
-        store.dispatch('getAppMenus').then(res => {
+        this.getTabsRoutes()
+    }
+
+    //获取tabs的路由
+    static getTabsRoutes(route = null) {
+        let pid = route ? getThisRoute(route)['id'] : '-2';
+        store.dispatch('getAppMenus', pid).then(res => {
             let home = res[0];
             store.dispatch('getAppMenus', home['id']).then(res2 => {
                 home['children'] = res2;
@@ -62,14 +68,20 @@ class permissions {
         return getThisRoute(route)
     }
 
-
     //新增路由
     static addRoute(route) {
         let routes = [];
         if (Array.isArray(route)) {
-            routes = route;
-        } else if (route.constructor instanceof Object) {
+            route.forEach(item => {
+                if (typeof item == 'string') {
+                    route = {name: item};
+                }
+                routes.push(route);
+            });
+        } else if (typeof route == 'object') {
             routes.push(route)
+        } else if (typeof route == 'string') {
+            routes.push({name: route});
         }
         return new Promise((resolve) => {
             store.dispatch('addRoutes', routes, true).then(res => {
@@ -77,7 +89,6 @@ class permissions {
                 resolve(result);
             });
         });
-
     }
 
 }
@@ -114,13 +125,13 @@ function getTreeNode(data, obj) {
 //处理图片
 function doIcon(res) {
     res.forEach(item => {
-        if (utils.isNotEmpty(item['meta']['icon']) && item['meta']['icon'].includes(".")) {
+        if (item['meta'] && utils.isNotEmpty(item['meta']['icon']) && item['meta']['icon'].includes(".")) {
             item['meta']['icon'] = require("@/assets/images/" + item.meta.icon);
         }
         if (item.children) {
-            item.children.forEach(item => {
-                if (utils.isNotEmpty(item['meta']['icon']) && item['meta']['icon'].includes(".")) {
-                    item['meta']['icon'] = require("@/assets/images/" + item.meta.icon);
+            item.children.forEach(item2 => {
+                if (item2['meta'] &&utils.isNotEmpty(item2['meta']['icon']) && item2['meta']['icon'].includes(".")) {
+                    item2['meta']['icon'] = require("@/assets/images/" + item2.meta.icon);
                 }
             });
         }

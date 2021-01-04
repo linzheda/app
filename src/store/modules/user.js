@@ -1,4 +1,5 @@
 import {post} from '@/plugins/http';
+import utils from "@/utils/utils";
 import router, {resetRouter} from '@/router'
 
 const user = {
@@ -72,33 +73,6 @@ const user = {
             });
         },
         //获取菜单
-        getMenu({commit, state}) {
-            return new Promise((resolve, reject) => {
-                let param = {
-                    userId: state.id || localStorage.getItem("id"),
-                    isn: '0.-2',
-                    pid: -2
-                };
-                post('access/resources/getResourcesByUserId', param).then(data => {
-                    let arr2 = [
-                        {
-                            path: '/404',
-                            component: () => import('@/views/404'),
-                            meta: {title: '404', icon: '404'},
-                            hidden: true
-                        },
-                        {path: '*', redirect: '/404', meta: {title: '404', icon: '404'}, hidden: true},
-                    ];
-                    let result = filterAsyncRouter(data.data);
-                    commit('SET_MENUS', result);
-                    router.addRoutes(result);
-                    router.addRoutes(arr2);
-                    resolve();
-                }).catch(error => {
-                    reject(error);
-                });
-            });
-        },
         getAppMenus({state}, pid = -2) {
             let userId = state.id || localStorage.getItem("id");
             return new Promise((resolve, reject) => {
@@ -134,12 +108,23 @@ const user = {
 
     }
 }
+
+const routerContext =require.context('@/views', true, /\.vue$/);
+
 // 遍历后台传来的路由字符串，转换为组件对象
 // eslint-disable-next-line no-unused-vars
 function filterAsyncRouter(asyncRouterMap) { //遍历后台传来的路由字符串，转换为组件对象
     const accessedRouters = asyncRouterMap.filter(route => {
-        if (route.component && typeof route.component == 'string') {
+        if (utils.isNotEmpty(route.component) && typeof route.component == 'string') {
             route.component = loadView(route.component)
+        }
+        //如果没有path
+        if(!route.path){
+            route['path']='/'+route.name;
+        }
+        //如果没有组件
+        if(utils.isEmpty(route.component)){
+            route.component =autoView(route.name);
         }
         if (route.children && route.children.length) {
             route.children = filterAsyncRouter(route.children)
@@ -148,12 +133,22 @@ function filterAsyncRouter(asyncRouterMap) { //遍历后台传来的路由字符
     });
     return accessedRouters
 }
-
+//自动装配路由
+function autoView(name) {
+    let result = '';
+    routerContext.keys().forEach(key => {
+        const component = routerContext(key).default;
+        if(component.name===name){
+            result = key.substring(1, key.length - 4);
+        }
+    });
+    return ()=>import('@/views' + result );
+}
+// 路由懒加载
 function loadView(view) {
-    // 路由懒加载
     return () => import('@/views/' + view );
 }
-
+//从后台获取路由
 function getAccessRoute(userId, pid) {
     return new Promise((resolve) => {
         let param = {
