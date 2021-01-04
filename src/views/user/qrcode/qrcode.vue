@@ -1,5 +1,5 @@
 <template>
-    <div class="qrcode tui-wh100">
+    <div class="qrcode">
         <page-header></page-header>
         <!--页面主体-->
         <div class="tui-content">
