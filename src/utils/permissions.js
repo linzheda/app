@@ -38,7 +38,7 @@ class permissions {
 
     //获取tabs的路由
     static getTabsRoutes(route = null) {
-        let pid = route ? getThisRoute(route)['id'] : '-2';
+        let pid = route ? getThisRoute(route)['id'] : -2;
         store.dispatch('getAppMenus', pid).then(res => {
             let home = res[0];
             store.dispatch('getAppMenus', home['id']).then(res2 => {
@@ -76,7 +76,7 @@ class permissions {
                 if (typeof item == 'string') {
                     route = {name: item};
                 }
-                routes.push(route);
+                routes.push(item);
             });
         } else if (typeof route == 'object') {
             routes.push(route)
@@ -91,9 +91,14 @@ class permissions {
         });
     }
 
+    // 新增图片资源
+    static doIconMore(arr,img = 'icon'){
+        doIcon(arr,img);
+    }
+
 }
 
-
+//获取当前路由
 function getThisRoute(route) {
     return getTreeNode(store.getters.menus, route);
 }

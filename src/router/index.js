@@ -51,7 +51,9 @@ const scrollBehavior = function (to, from, savedPosition) {
     }
 }
 const createRouter = () => new Router({
-    // mode: 'history', // require service support
+    base: window.__POWERED_BY_QIANKUN__ ? "/qiankunApp/app" : "/",
+    // 运行在主应用中时，基础路由地址配置为 /vue
+    mode: 'history', // require service support
     scrollBehavior: scrollBehavior,
     routes
 });

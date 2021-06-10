@@ -175,7 +175,9 @@ class utils {
 
     //数字格式化  num 数值(Number或者String) cent 要保留的小数位(Number)  isThousand 是否需要千分位 0:不需要,1:需要(数值类型);
     static formatNumber(num, cent, isThousand) {
-
+        if(this.isEmpty(num)){
+            return num;
+        }
         // eslint-disable-next-line no-useless-escape
         num = num.toString().replace(/\$|\,/g, '');
         // 检查传入数值为数值类型
@@ -294,6 +296,32 @@ class utils {
                 age++;
             }
             return age;
+        }
+    }
+
+    //获取uuid
+    static guid() {
+        function S4() {
+            return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+        }
+        return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
+    }
+
+    //json 字符串 转换为就送对象
+    static jsonFormat(str){
+        if (typeof str == 'string') {
+            try {
+                let obj=JSON.parse(str);
+                if(typeof obj == 'object' && obj ){
+                    return obj;
+                }else{
+                    return str;
+                }
+            } catch(e) {
+                return str;
+            }
+        }else{
+            return str
         }
     }
 

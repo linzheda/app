@@ -46,6 +46,15 @@
         created() {
             this.$store.dispatch('initEnv',process.env.NODE_ENV);
             this.$store.dispatch('initAppName',process.env.VUE_APP_NAME);
+            this.$store.dispatch('initUa');
+            window.onresize = function () {
+                if (document.activeElement.tagName === "INPUT" || document.activeElement.tagName === "TEXTAREA") {
+                    let ele = document.activeElement;
+                    setTimeout(() => {
+                        ele.scrollIntoView();//焦点元素滚到可视区域的问题
+                    }, 10);
+                }
+            }
         },
         methods: {
             onSwipeRight() {

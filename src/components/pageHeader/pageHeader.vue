@@ -1,17 +1,19 @@
 <template>
-    <van-sticky>
-        <header class="header" :style="style" :class="{ 'botborder': border }">
-            <van-icon v-if="leftArrow" name="arrow-left" ref="backbtn" v-goback:[callbackKey]="data"/>
+    <header class="header" :style="style" :class="{ 'botborder': border }">
+        <van-icon class="header-left" v-if="leftArrow" name="arrow-left" ref="backbtn" v-goback:[callbackKey]="data"/>
+        <div class="header-center">
             <slot>
-                <h1 class="title" v-if="hastitle" >
-                    {{pageTitle}}
-                </h1>
+                <div class="header-title">
+                    <h6 class="title" v-if="hastitle">
+                        {{pageTitle}}
+                    </h6>
+                </div>
             </slot>
-            <div class="tui-right">
-                <slot name="right"></slot>
-            </div>
-        </header>
-    </van-sticky>
+        </div>
+        <div class="header-right">
+            <slot name="right"></slot>
+        </div>
+    </header>
 </template>
 
 <script>
@@ -151,28 +153,16 @@
 
 <style scoped lang="less">
     .header {
-        /*position: sticky;*/
         position: relative;
         z-index: 10;
         top: 0;
         right: 0;
         left: 0;
-        /*height: 44px;*/
         height: 74px;
-
-        padding: 0 15px;
-        padding-top:30px;
-
+        padding: 30px 15px 0;
         display: flex;
         align-items: center;
-        //padding-right: 10px;
-        //padding-left: 45px;
-        .tui-right{
-            //top: 50%;
-            //transform: translate(0,-50%);
-            right: 15px;
-        }
-        .van-icon-arrow-left, .title {
+        .title {
             z-index: 1;
         }
 
@@ -192,24 +182,43 @@
             }
         }
 
-        .title {
-            font-size: 17px;
-            font-weight: 500;
-            line-height: 44px;
-            position: absolute;
-            right: 40px;
-            left: 40px;
-            display: inline-block;
-            overflow: hidden;
-            width: auto;
-            margin: 0;
-            text-overflow: ellipsis;
-            text-align: center;
+        // 左 - 返回键
+        .header-left {
+            &.van-icon-arrow-left {
+                z-index: 1;
+                font-size: 24px;
+                margin-right: 10px;
+            }
         }
 
-        .van-icon-arrow-left {
-            font-size: 24px;
-            margin-right: 10px;
+        // 中 - 标题、logo、工具栏
+        .header-center {
+            flex: 1;
+
+            /deep/ .header-title {
+                text-align: center;
+                position: absolute;
+                right: 40px;
+                left: 40px;
+                top: 30px;
+
+
+                .title {
+                    font-size: 17px;
+                    font-weight: 500;
+                    line-height: 44px;
+                    display: inline-block;
+                    overflow: hidden;
+                    width: auto;
+                    margin: 0;
+                    text-overflow: ellipsis;
+                }
+            }
+        }
+
+        // 右
+        .header-right {
+
         }
     }
 </style>

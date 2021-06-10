@@ -2,6 +2,7 @@ import utils from "@/utils/utils";
 const getters = {
   env: state => state.app.env,
   appName: state => state.app.appName,
+  ua: state => state.app.ua,
   direction: state => state.app.direction,
   keepArray: state => state.app.keepArray,
   imei: state => state.app.imei,

@@ -1,6 +1,6 @@
 import axios from 'axios'
 import store from '../store'
-import {Dialog,Toast} from 'vant';
+import {Dialog, Toast} from 'vant';
 import utils from "@/utils/utils";
 
 
@@ -49,11 +49,11 @@ instance.interceptors.response.use(
                 title: '温馨提示',
                 message: error
             }).then(() => {
-                store.dispatch('loginOut',0).then(() => {
+                store.dispatch('loginOut', 0).then(() => {
                     location.reload();// 为了重新实例化vue-router对象 避免bug
                 });
             });
-        }else {
+        } else {
             Toast({
                 type: 'fail',
                 message: error,
@@ -68,9 +68,9 @@ instance.interceptors.response.use(
 function transformRequest(data) {
     let str = [];
     for (let key in data) {
-        let value=utils.isEmpty(data[key])?'':data[key];
-        if(typeof value=='string'){
-            value=value.trim();
+        let value = utils.isEmpty(data[key]) ? '' : data[key];
+        if (typeof value == 'string') {
+            value = value.trim();
         }
         str.push(encodeURIComponent(key) + "=" + encodeURIComponent(value));
     }
@@ -78,13 +78,13 @@ function transformRequest(data) {
 }
 
 //获取所有配置的url
-let result={};
-for(let key in process.env){
-    if(key.endsWith('_URL')){
+let result = {};
+for (let key in process.env) {
+    if (key.endsWith('_URL')) {
         let newkey = key.replace("VUE_APP_", '').replace("_URL", '');
         newkey = newkey.toLocaleLowerCase();
         result[newkey] = process.env[key];
-        if(newkey==='base'&&process.env.NODE_ENV==='dev'){
+        if (newkey === 'base' && process.env.NODE_ENV === 'dev') {
             result[newkey] = '/api/';
         }
     }
@@ -92,21 +92,34 @@ for(let key in process.env){
 const urlApi = result;
 
 
-const get = (url, params = {}, isCheck = true, baseUrl = urlApi['base'],isTransform=true) => {
+const get = (url, params = {}, isCheck = true, baseUrl = urlApi['base'], isTransform = true) => {
+    return doRequest('get', url, params, isCheck, baseUrl, isTransform)
+};
+
+const post = (url, params = {}, isCheck = true, baseUrl = urlApi['base'], isTransform = true) => {
+    return doRequest('post', url, params, isCheck, baseUrl, isTransform)
+};
+
+const postFile = (url, params = {}, isCheck = true, baseUrl = urlApi['base'], isTransform = true) => {
+    return doRequest('file', url, params, isCheck, baseUrl, isTransform);
+}
+
+
+function doRequest(way = 'post', url, params = {}, isCheck = true, baseUrl = urlApi['base'], isTransform = true) {
     url = baseUrl + url;
     //转换为键值对的形式
-    if(isTransform){
-        params=transformRequest(params)
+    if (isTransform) {
+        params = transformRequest(params)
     }
     //检查约定的状态码
     if (isCheck) {
-        return instance.get(url, params).then(res => {
+        return request(way, url, params).then(res => {
             if (res.code != 200) {
                 Toast({
                     type: 'fail',
                     message: res.msg,
                     onClose: () => {
-                        return res;
+                        return Promise.reject(res);
                     },
                 });
             } else {
@@ -114,43 +127,36 @@ const get = (url, params = {}, isCheck = true, baseUrl = urlApi['base'],isTransf
             }
         });
     } else {
-        return instance.get(url, params);
+        return request(way, url, params);
     }
-};
+}
 
-const post = (url, params = {}, isCheck = true, baseUrl = urlApi['base'],isTransform=true) => {
-    url = baseUrl + url;
-    //是否转换为键值对形式
-    if(isTransform){
-        params=transformRequest(params)
+async function request(way, url, params) {
+    const config = {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        }
+    };
+    switch (way) {
+        case 'post':
+            return instance.post(url, params);
+        case 'get':
+            return instance.get(url, params);
+        case 'file':
+            return instance.post(url, params, config);
     }
-    //检查约定的状态码
-    if (isCheck) {
-        return instance.post(url, params).then(res => {
-            if (res.code != 200) {
-                Toast({
-                    type: 'fail',
-                    message: res.msg,
-                });
-                return res;
-            } else {
-                return res;
-            }
-        });
-    } else {
-        return instance.post(url, params);
-    }
-};
+}
 
 export {
     get,
     post,
+    postFile,
     urlApi
 }
 
 export default {
     install(Vue) {
-        Vue.http = {get, post, urlApi};
+        Vue.http = {get, post, postFile, urlApi};
         Vue.prototype.$http = Vue.http;
     }
 };

@@ -101,7 +101,7 @@ const user = {
                 if (routes.length > 0) {
                     router.addRoutes(routes.concat(arr2));
                 }
-                resolve(data)
+                resolve(routes)
             });
         }
 
@@ -136,12 +136,13 @@ function filterAsyncRouter(asyncRouterMap) { //遍历后台传来的路由字符
 //自动装配路由
 function autoView(name) {
     let result = '';
-    routerContext.keys().forEach(key => {
+    for(let key of routerContext.keys()){
         const component = routerContext(key).default;
         if(component.name===name){
             result = key.substring(1, key.length - 4);
+            break;
         }
-    });
+    }
     return ()=>import('@/views' + result );
 }
 // 路由懒加载

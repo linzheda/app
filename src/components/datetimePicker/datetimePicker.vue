@@ -4,7 +4,9 @@
 **/
 <template>
     <div class="datetimePicker">
-        <input type="text" readonly v-model="result" @focus="isShowDate=true">
+        <van-field readonly v-if="isField" :label="fieldLabel" :placeholder="'请选择'+fieldLabel"
+                   :required="isFieldRequired" right-icon="calendar-o" v-model="result" @click="isShowDate = true"/>
+        <input class="my-input" type="text" v-else readonly v-model="result" @focus="isShowDate = true">
         <van-popup v-model="isShowDate" position="bottom">
             <van-datetime-picker
                     v-model="currentDate"
@@ -27,12 +29,9 @@
             event: 'input'
         },
         props: {
-            /**
-             * 当前输入的值
-             */
-            inputValue: {
+            inputValue:{
                 type: String,
-                default: null
+                default:null
             },
             /**
              * 类型    时间类型，可选值为 date time year-month month-day datehour 默认datetime
@@ -61,12 +60,34 @@
             maxDate: {
                 type: Date,
                 default: null
+            },
+            //是否是输入框
+            isField: {
+                type: Boolean,
+                default: false
+            },
+            isFieldRequired: {
+                type: Boolean,
+                default: false
+            }, //是否是必须的
+            //field 的文本
+            fieldLabel: {
+                type: String,
+                default: '时间选择'
+            }
+        },
+        computed:{
+            result:function () {
+                if(this.inputValue){
+                    return this.$utils.getDate(this.currentDate, this.fmt);
+                }else{
+                    return '';
+                }
             }
         },
         data() {
             return {
-                result: this.inputValue,//返回的结果
-                currentDate: this.inputValue,//当前日期
+                currentDate: null,//当前日期
                 isShowDate: false,//是否显示日期插件
                 minDateTime: this.$utils.addMonth(new Date(), -12 * 10),//是否显示日期插件
                 maxDateTime: this.$utils.addMonth(new Date(), 12 * 10),//是否显示日期插件
@@ -103,8 +124,10 @@
             // 点击确定
             confirm() {
                 this.isShowDate = false;
-                this.result = this.$utils.getDate(this.currentDate, this.fmt);
-                this.$emit('input', this.result);
+                this.inputValue=this.$utils.getDate(this.currentDate, this.fmt);
+                this.$nextTick(() => {
+                    this.$emit('input', this.result);
+                });
             },
             // 点击取消
             cancel() {
@@ -120,8 +143,9 @@
         display: inline-block;
         width: auto;
         height: auto;
+        text-align: left;
 
-        input {
+        .my-input {
             border: none;
             height: 100%;
             width: 100%;
