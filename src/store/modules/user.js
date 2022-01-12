@@ -109,7 +109,7 @@ const user = {
     }
 }
 
-const routerContext =require.context('@/views', true, /\.vue$/);
+const routerContext =require.context('@/views', true, /\.vue$/,'lazy');
 
 // 遍历后台传来的路由字符串，转换为组件对象
 // eslint-disable-next-line no-unused-vars
@@ -136,12 +136,26 @@ function filterAsyncRouter(asyncRouterMap) { //遍历后台传来的路由字符
 //自动装配路由
 function autoView(name) {
     let result = '';
-    for(let key of routerContext.keys()){
-        const component = routerContext(key).default;
-        if(component.name===name){
-            result = key.substring(1, key.length - 4);
-            break;
+    // 找到name对应的key
+    let targetKey = null;
+    routerContext.keys().forEach(v=>{
+        let target = '';
+        target = v.slice(0,v.lastIndexOf('.vue'));
+        target = target.slice(target.lastIndexOf('/') + 1);
+        if(target === name){
+            targetKey = v;
         }
+    })
+    // 使用目标key找到组件
+    try{
+        result = targetKey.substring(1, targetKey.length - 4);
+    }
+    catch (e) {
+        // 没名称视为纯菜单，不进行警告
+        if(name){
+            console.error('路由菜单：\t' + name + '\t未找到对应组件,可能的原因是:组件还未提交或配置的组件名称不存在于项目中。');
+        }
+        return false;
     }
     return ()=>import('@/views' + result );
 }

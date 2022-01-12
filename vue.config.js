@@ -51,6 +51,12 @@ module.exports = {
     },
     chainWebpack: (config) => {
 
+        config.when(process.env.NODE_ENV !== 'dev',
+            config => {
+                //打包分析
+                config.plugin('webpack-bundle-analyzer').use(require('webpack-bundle-analyzer').BundleAnalyzerPlugin)
+            });
+
         // it can improve the speed of the first screen, it is recommended to turn on preload
         // it can improve the speed of the first screen, it is recommended to turn on preload
         config.plugin('preload').tap(() => [

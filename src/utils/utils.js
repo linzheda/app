@@ -3,6 +3,20 @@ const fmtYMDHMS = 'yyyy-MM-dd hh:mm:ss';//时间格式 YMDHMS
 const fmtYMDHM = 'yyyy-MM-dd hh:mm';//时间格式 YMDHMS
 
 class utils {
+    /**
+     * 解决Vue Template模板中无法使用可选链的问题
+     * @param obj
+     * @param rest
+     * @returns {*}
+     */
+    static optionalChaining = (obj, ...rest) => {
+        let tmp = obj
+        for (let key in rest) {
+            let name = rest[key]
+            tmp = tmp[name]
+        }
+        return tmp
+    }
     //判断是否为空
     static isEmpty(value) {
         return value == null || Number.isNaN(value) || value == 'NaN' || (typeof value === 'string' && (value.trim().length === 0
@@ -96,6 +110,37 @@ class utils {
     //获取当前日期
     static getCurrentDay() {
         return this.dateFormat(new Date(), fmtYMD);
+    }
+
+    //获取某月第一天
+    static getMonthFirst(myData) {
+        let date = new Date(myData);
+        let year = date.getFullYear();
+        let month = date.getMonth() + 1;
+        if (month < 10) {
+            return year + "-0" + month + "-01";
+        } else {
+            return year + "-" + month + "-01";
+        }
+    }
+
+    //获取某月最后一天
+    static getMonthLast(myDate) {
+        let date = new Date(myDate);
+        let currentMonth = date.getMonth();
+        let nextMonth = ++currentMonth;
+        let nextMonthFirstDay = new Date(date.getFullYear(), nextMonth, 1);
+        let oneDay = 1000 * 60 * 60 * 24;
+        let lastTime = new Date(nextMonthFirstDay - oneDay);
+        let month = parseInt(lastTime.getMonth() + 1);
+        let day = lastTime.getDate();
+        if (month < 10) {
+            month = '0' + month
+        }
+        if (day < 10) {
+            day = '0' + day
+        }
+        return this.dateFormat(new Date(date.getFullYear() + '-' + month + '-' + day), 'yyyy-MM-dd');
     }
 
     //获取当月第一天
@@ -324,6 +369,29 @@ class utils {
             return str
         }
     }
+
+    /**
+     * 深拷贝对象
+     */
+    static copyObject(object) {
+        if(!this.isEmpty(object)){
+            return JSON.parse(JSON.stringify(object))
+        }else {
+            return null ;
+        }
+    }
+
+    //驼峰转换下划线
+    static camelToUnderline(str) {
+        return str.replace(/([A-Z])/g,"_$1").toLowerCase();
+    }
+
+    //下划线转换驼峰
+    static underlineToCamel(str) {
+        // eslint-disable-next-line no-useless-escape
+        return str.replace(/\_(\w)/g, (all,letter)=>letter.toUpperCase())
+    }
+
 
 
 }

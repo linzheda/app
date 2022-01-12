@@ -3,7 +3,7 @@
         <van-icon class="header-left" v-if="leftArrow" name="arrow-left" ref="backbtn" v-goback:[callbackKey]="data"/>
         <div class="header-center">
             <slot>
-                <div class="header-title">
+                <div class="header-title" :style="{'top':$store.getters.headerHeight,'margin-right':leftArrow?'34px':'0'}">
                     <h6 class="title" v-if="hastitle">
                         {{pageTitle}}
                     </h6>
@@ -66,6 +66,35 @@
             hastitle: {
                 type: Boolean,
                 default :true
+            },
+            //是否公园
+            ispark: {
+                type: Boolean,
+                default :false
+            }
+        },
+        watch:{
+            transparent:{
+                handler(){
+                    if (this.transparent) {
+                        this.style = {
+                            'background': `rgba(${this.hextoRGB(this.backgroundColor)},0)`,
+                            'color': this.fontColor
+                        }
+                    } else {
+                        this.style = {
+                            'background': `rgba(${this.hextoRGB(this.backgroundColor)},1)`,
+                            'color': this.fontColor
+                        }
+                    }
+                    if(this.ispark){
+                        this.style['padding'] = 0;
+                    }
+                    this.style['padding-top']=(parseFloat(this.$store.getters.headerHeight)-44)+'px' ;
+                    this.style['height']=this.$store.getters.headerHeight;
+
+                },
+                immediate: true
             }
         },
         data() {
@@ -84,17 +113,6 @@
             if (this.needCallback && this.$utils.isEmpty(this.callback)) {
                 let arr = this.$store.getters.keepArray;
                 this.callbackKey = arr[arr.length - 2];
-            }
-            if (this.transparent) {
-                this.style = {
-                    'background': `rgba(${this.hextoRGB(this.backgroundColor)},0)`,
-                    'color': this.fontColor
-                }
-            } else {
-                this.style = {
-                    'background': `rgba(${this.hextoRGB(this.backgroundColor)},1)`,
-                    'color': this.fontColor
-                }
             }
         },
         mounted() {
@@ -128,7 +146,12 @@
                 return `${result.join(',')}`
             },
             goBack() {
-                this.$refs.backbtn.click();
+                this.$nextTick(()=>{
+                    if(this.data){
+                        this.$refs.backbtn.dataset['callbackData']=JSON.stringify(this.data);
+                    }
+                    this.$refs.backbtn.click();
+                });
             },
             handleScroll() {
                 //获取当前页面的滚动条纵坐标位置      网页被卷去的高
@@ -139,12 +162,9 @@
                     opacity = opacity > 1 ? 1 : opacity;
                     this.backgroundopacity = opacity;
                     this.$emit('update:backgroundopacity',opacity);
-                    // this.style = { background :rgba( this.hextoRGB(this.backgroundColor))}
                     this.opacitybackground = `rgba(${this.hextoRGB(this.backgroundColor)},${this.backgroundopacity})`;
-                    this.style = {'background-color': this.opacitybackground, color: this.fontColor};
-                    this.showhash = false;
-                } else {
-                    this.showhash = true;
+                    this.style =Object.assign(this.style,{'background-color': this.opacitybackground, color: this.fontColor});
+                    this.$forceUpdate();
                 }
             }
         }
@@ -153,13 +173,13 @@
 
 <style scoped lang="less">
     .header {
-        position: relative;
+        position: sticky;
         z-index: 10;
         top: 0;
         right: 0;
         left: 0;
         height: 74px;
-        padding: 30px 15px 0;
+        padding: 0 15px;
         display: flex;
         align-items: center;
         .title {
@@ -194,15 +214,9 @@
         // 中 - 标题、logo、工具栏
         .header-center {
             flex: 1;
-
             /deep/ .header-title {
                 text-align: center;
-                position: absolute;
-                right: 40px;
-                left: 40px;
-                top: 30px;
-
-
+                margin-right: 34px;
                 .title {
                     font-size: 17px;
                     font-weight: 500;
