@@ -50,15 +50,15 @@ module.exports = {
         },
     },
     chainWebpack: (config) => {
-
+        //打包分析
         config.when(process.env.NODE_ENV !== 'dev',
             config => {
-                //打包分析
+
                 config.plugin('webpack-bundle-analyzer').use(require('webpack-bundle-analyzer').BundleAnalyzerPlugin)
             });
 
-        // it can improve the speed of the first screen, it is recommended to turn on preload
-        // it can improve the speed of the first screen, it is recommended to turn on preload
+
+        //首屏优化
         config.plugin('preload').tap(() => [
             {
                 rel: 'preload',
@@ -77,7 +77,7 @@ module.exports = {
             return args
         });
 
-        // set svg-sprite-loader
+        // svg
         config.module
             .rule('svg')
             .exclude.add(resolve('src/icons'))
@@ -94,6 +94,7 @@ module.exports = {
             })
             .end()
 
+        //文件拆包
         config
             .when(process.env.NODE_ENV !== 'dev',
                 config => {
@@ -120,6 +121,12 @@ module.exports = {
                                 priority: 20, // the weight needs to be larger than libs and app or it will be packaged into libs or app
                                 test: /[\\/]node_modules[\\/]_?vant(.*)/ // in order to adapt to cnpm
                             },
+                            echarts: {
+                                name: 'chunk-echarts',
+                                priority: 20,
+                                test: /[\\/]node_modules[\\/]_?echarts(.*)/,
+                                chunks: 'all'
+                            },
                             commons: {
                                 name: 'chunk-commons',
                                 test: resolve('src/components'), // can customize your rules
@@ -133,6 +140,40 @@ module.exports = {
                     config.optimization.runtimeChunk('single')
                 }
             )
+
+        // gzip 压缩
+        config.when(process.env.NODE_ENV !== 'dev',
+            config => {
+                config
+                    .plugin('CompressionWebpackPlugin')
+                    .use('compression-webpack-plugin', [{
+                        test: /\.js$|\.html$|\.css/,
+                        threshold: 1024,
+                        deleteOriginalAssets: false
+                    }])
+                    .end()
+            }
+        )
+
+        // 去除debugger
+        config.when(process.env.NODE_ENV !== 'dev',
+            config => {
+                config.plugin('TerserJSPlugin').use('terser-webpack-plugin').end();
+                config.optimization.minimize(true);
+                config.optimization.minimizer([() => {
+                    return config.plugin('TerserJSPlugin').use('terser-webpack-plugin', [{
+                        parallel: true,
+                    }]).use()
+                }])
+            }
+        )
+
+        // 文件名hash
+        config.when(process.env.NODE_ENV !== 'dev',
+            config => {
+                config.output.filename('[name].[hash].js').chunkFilename('[name].[hash].js').end();
+            }
+        )
 
 
     },

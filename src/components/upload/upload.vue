@@ -4,28 +4,29 @@
 **/
 <template>
     <div class="upload">
-        <!--图片-->
-        <template v-if="type===0">
-            <van-uploader v-model="fileList" :max-size="limitSize" :max-count="limitNum" :multiple="multiple" :capture="capture"
-                          :before-read="beforeRead" :after-read="afterRead" :before-delete="beforeDelete" @oversize="onOversize"   >
-                <template #default>
-                    <slot></slot>
-                </template>
-                <template #preview-cover="{ file }">
-                    <slot name="preview-cover">
-                        <div class="preview-cover van-ellipsis">{{ file.name }}</div>
-                    </slot>
-                </template>
-            </van-uploader>
-        </template>
+        <van-uploader v-model="fileList" :max-size="maxSize" :max-count="maxCount"
+                      :multiple="multiple" :capture="capture"  :readonly="readonly"  v-bind="$attrs"
+                      :before-read="beforeRead" :after-read="afterRead" :before-delete="beforeDelete"
+                      @oversize="onOversize">
+            <template #default>
+                <slot></slot>
+            </template>
+            <template #preview-cover="{ file }">
+                <slot name="preview-cover">
+                    <div class="preview-cover van-ellipsis" v-if="file['name']">{{ file.name }}</div>
+                </slot>
+            </template>
+        </van-uploader>
     </div>
 </template>
 
 <script>
+    import Compressor from 'compressorjs';
+
     export default {
         name: "upload",
         props: {
-            limitNum: {//限制上传个数  默认20
+            maxCount: {//限制上传个数  默认20
                 type: Number,
                 default: 9
             },
@@ -33,29 +34,25 @@
                 type: String,
                 default: null
             },
-            limitSize:{
-                type:Number,
-                default:5242880
+            maxSize: {
+                type: Number,
+                default: 5242880
             },//文件大小5m
-            multiple:{//多选
-                type:Boolean,
-                default:false
+            multiple: {//多选
+                type: Boolean,
+                default: false
             },
-            capture:{//是否调起摄像头 camera
-                type:String,
-                default:null
+            readonly: {//是否只读
+                type: Boolean,
+                default: false
+            },
+            capture: {//是否调起摄像头 camera
+                type: String,
+                default: null
             },
             attachids: {//附件id集合,隔开
                 type: String,
                 default: null
-            },
-            type: {//上传文件格式 0图片 1 视频  2 音频文件  3文件  -1  选择
-                type: Number,
-                default: 0
-            },
-            showStyle: {//0单纯的展示不可上传  1纯图片(上传一般只能是图片)  2文件(上传的可以是图片 可以是附件)
-                type: Number,
-                default: 0
             },
             title: {//标题
                 type: String,
@@ -78,7 +75,10 @@
                     this.fileList.push({
                         url: process.env.VUE_APP_FILE_URL + item + '&isThumb=1',
                         id:item,
-                        isImage: true
+                        isImage: true,
+                        file:{
+                            name:''
+                        }
                     });
                 });
             }
@@ -103,7 +103,16 @@
                         return false;
                     }
                 }
-                return true;
+                return new Promise((resolve) => {
+                    // compressorjs 默认开启 checkOrientation 选项
+                    // 会将图片修正为正确方向
+                    new Compressor(file, {
+                        success: resolve,
+                        error(err) {
+                            console.log(err.message);
+                        },
+                    });
+                });
             },
             //文件读取完成后的回调函数
             afterRead(file){
