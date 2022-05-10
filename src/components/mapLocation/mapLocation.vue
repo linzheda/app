@@ -195,7 +195,7 @@
                 let lng = temp['location']['lng'];
                 let lat = temp['location']['lat'];
                 if (this.is84) {
-                    let position = this.$gis.gcj_decrypt(lng, lat);
+                    let position = this.$gis.gcj_decrypt(lat,lng);
                     lng = position.lon;
                     lat = position.lat;
                 }

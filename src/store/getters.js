@@ -7,6 +7,8 @@ const getters = {
   keepArray: state => state.app.keepArray,
   imei: state => state.app.imei,
   canSwipeRight: state => state.app.canSwipeRight,
+  headerHeight:state => state.setting.headerHeight,
+
   id: state => {return myGet(state.user.id,'id')},
   name: state => {return myGet(state.user.name,'name')},
   token: state =>{return myGet(state.user.token,'token')},

@@ -49,7 +49,7 @@ Vue.use(Dialog);
 //指令
 Vue.use(goback);
 //过滤器
-Object.keys(filter).forEach(key=>Vue.filter(key,filter[key]));
+Vue.use(filter);
 //表单校验插件
 Vue.use(validate);
 //滑动事件

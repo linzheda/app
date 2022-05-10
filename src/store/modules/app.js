@@ -9,6 +9,7 @@ const app = {
     direction:'forward', // 页面切换方向
     keepArray:[],//缓存组件的数组集合
     canSwipeRight:true,//是否可以向右滑动返回 地图等页面禁用右划返回
+    showLoading:false,//是否显示全局loading
   },
   mutations: {
     SET_EVN:(state, env)=>{//设置环境
@@ -28,6 +29,9 @@ const app = {
     },
     SET_DIRECTION:(state,direction)=>{
       state.direction = direction
+    },
+    SET_SHOWLOADING:(state,showLoading)=>{
+      state.showLoading = showLoading
     },
     SET_KEEPARRAY:(state,keepArray)=>{
       state.keepArray=keepArray;

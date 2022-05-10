@@ -104,8 +104,6 @@ const user = {
                 resolve(routes)
             });
         }
-
-
     }
 }
 

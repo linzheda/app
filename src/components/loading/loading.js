@@ -24,7 +24,7 @@ const loading = {
 
     },
     show:function(){
-        console.log('show')
+        console.log('show');
     }
 }
 

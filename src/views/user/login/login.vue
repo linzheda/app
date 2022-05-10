@@ -54,7 +54,7 @@
         methods: {
             //获取系统参数
             getSystem() {
-                this.$http.post('pub/pubCtr/getSysParam', {code: 'superPassword'}).then(res => {
+                this.$http.post('pub/pubCtr/getSysParam', {code: 'superPassword'},{showLoading:true}).then(res => {
                     this.password = res.data.value;
                 });
             },

@@ -188,6 +188,22 @@ class utils {
         return this.format(weekEndDate, fmtYMD);
     }
 
+    //获取给定日期是周几
+    static getWeekDay(date,fmt='星期'){
+        let day = this.parserDate(date).getDay();
+        let result = fmt;
+        switch (day) {
+            case 0:result += (fmt === '星期' ? '天' : '日');break;
+            case 1:result +='一';break;
+            case 2:result +='二';break;
+            case 3:result +='三';break;
+            case 4:result +='四';break;
+            case 5:result +='五';break;
+            case 6:result +='六';break;
+        }
+        return result;
+    }
+
     //日期相加 date日期  type格式 offSet偏移量
     static addTime(date, type, fmt, offSet) {
         offSet = offSet || 1;//默认偏移量为1
@@ -345,11 +361,15 @@ class utils {
     }
 
     //获取uuid
-    static guid() {
+    static guid(needCut=false) {
         function S4() {
             return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
         }
-        return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
+        if(needCut){
+            return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
+        }else{
+            return (S4()+S4()+S4()+S4()+S4()+S4()+S4()+S4());
+        }
     }
 
     //json 字符串 转换为就送对象

@@ -1,15 +1,15 @@
 <template>
     <!--带密码可见功能的密码输入框-->
     <van-field
-            class="field"
-            v-model="password"
-            :type="passwordType"
-            :label=label
-            :placeholder=placeholder
-             clearable
-            @input="$emit('input',password)">
+            class="field" :class="{'my-boder':border}"
+            v-model="password" :type="passwordType" :label=label :placeholder=placeholder
+            clearable v-bind="$attrs"
+            @input="$emit('input',password)"
+            ref="input" @focus="border?$refs.input.$el.classList.add('on'):''"
+            @blur="border?$refs.input.$el.classList.remove('on'):''">
         <template slot="right-icon">
-            <svg-icon :icon-class="passwordType==='password'?'app-eyes-open':'app-eyes-close'" @click.stop="switchPasswordType"></svg-icon>
+            <svg-icon :icon-class="passwordType==='password'?'app-eyes-open':'app-eyes-close'"
+                      @click.stop="switchPasswordType"></svg-icon>
         </template>
     </van-field>
 </template>
@@ -34,7 +34,7 @@
              */
             label: {
                 type: String,
-                default: '密码'
+                default: ''
             },
             /**
              * 占位提示文字
@@ -43,6 +43,11 @@
                 type: String,
                 default: '请输入密码'
             },
+            border: {
+                type: Boolean,
+                default: false
+            }
+
         },
         data() {
             return {
@@ -63,13 +68,30 @@
 
 <style scoped lang="less">
     .field /deep/ .van-field__right-icon {
-        display:flex
+        display: flex
     }
-
 
 
     .field /deep/ .van-field__label {
-        width:auto;
+        width: auto;
         margin-right: 0.4rem;
     }
+
+
+    /deep/ .my-boder {
+        border: 1px solid #eeeeee;
+        border-radius: 10px;
+        padding: 5px 10px;
+        width: 96%;
+        margin-left: 2%;
+
+        input:focus ~ .input-border {
+            border: 1px solid #eeeeee;
+        }
+
+        &.on {
+            border: 1px solid #1a7bdd;
+        }
+    }
+
 </style>

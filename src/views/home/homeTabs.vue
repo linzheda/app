@@ -2,10 +2,10 @@
     <div class="homeTabs">
         <router-view  />
         <van-tabbar route>
-            <van-tabbar-item v-for="(item,index) of menuList" active-color='29A1F7' :key="index" replace :to="item.path" >
-                <span>{{item.meta.title}}</span>
+            <van-tabbar-item v-for="(item,index) of menuList" v-show="item['path']" active-color='29A1F7' :key="index" replace :to="item.path" >
+                <span>{{item['meta']?item['meta']['title']:item['text']}}</span>
                 <template  #icon="props">
-                   <svg-icon  :icon-class="item.meta.icon" :class="{'active':props.active,'inactive':!props.active}" ></svg-icon>
+                   <svg-icon  :icon-class="item['meta']?item['meta']['icon']:''" :class="{'active':props.active,'inactive':!props.active}" ></svg-icon>
                 </template>
             </van-tabbar-item>
         </van-tabbar>
